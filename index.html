@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cerita tanpa nama. · Menfess Kampus</title>
+<meta name="description" content="Titip pesanmu. Biar menfess yang menyampaikan. Kirim cerita tanpa nama, tanpa login.">
+<meta property="og:title" content="Cerita tanpa nama. · Menfess Kampus">
+<meta property="og:description" content="Titip pesanmu. Biar menfess yang menyampaikan. Kirim cerita tanpa nama, tanpa login.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="id_ID">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f8f7ff;
+    --ink: #26223f;
+    --muted: #716d87;
+    --purple: #7050e5;
+    --purple-dark: #5837c3;
+    --line: #e9e6f3;
+    --font: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); background: var(--bg); color: var(--ink); font: 15px/1.6 var(--font); }
+  button, input, textarea { font: inherit; }
+  button, input, textarea { -webkit-tap-highlight-color: transparent; outline-offset: 4px; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid #9a80f5; }
+  .icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .shell { width: min(960px, calc(100% - 48px)); margin: auto; }
+  .header { display: flex; align-items: center; min-height: 80px; }
+  .brand { min-width: 0; }
+  .brand-name { font-size: 18px; font-weight: 750; letter-spacing: -.7px; line-height: 1.4; }
+  .brand-name span { color: var(--purple); }
+  .campus { display: block; color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
+  .account { display: block; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+  .main { width: min(100%, 520px); margin: 12px auto 0; }
+  .intro { text-align: center; margin-bottom: 26px; }
+  .hero-art { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 10px; }
+  .hero-icon { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .hero-fallback { font-size: 48px; line-height: 1; }
+  .hero-icon[hidden], .hero-fallback[hidden] { display: none; }
+  h1 { margin: 0 0 9px; font-size: 32px; font-weight: 750; line-height: 1.2; letter-spacing: -1.2px; }
+  h1 span { color: var(--purple); }
+  .intro-copy { color: var(--muted); font-size: 13px; margin: 0; }
+  .card { background: white; padding: 28px; border: 1px solid var(--line); border-radius: 18px; }
+  fieldset { padding: 0; margin: 0 0 20px; border: 0; min-width: 0; }
+  legend, .field-label { display: block; padding: 0; margin-bottom: 8px; font-size: 12px; font-weight: 600; }
+  .optional { color: var(--muted); font-weight: 400; font-size: 11px; }
+  .cats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .cat { min-height: 44px; padding: 8px 4px; border: 1px solid var(--line); background: white; color: #6a657e; border-radius: 8px; font-size: 12px; touch-action: manipulation; transition: background .15s, border-color .15s; }
+  .cat:hover { background: #faf8ff; border-color: #c8b7f7; }
+  .cat[aria-pressed="true"] { background: #f0eaff; color: var(--purple-dark); border-color: #b7a1ef; font-weight: 600; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .field { min-width: 0; }
+  .field input, textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 11px 12px; background: white; color: var(--ink); transition: border-color .15s, box-shadow .15s; }
+  .field input { font-size: 16px; min-height: 48px; }
+  input::placeholder, textarea::placeholder { color: #918ba4; opacity: 1; }
+  .field input:focus, textarea:focus { border-color: #a48ae9; box-shadow: 0 0 0 3px #7050e50b; }
+  textarea { display: block; min-height: 160px; resize: vertical; font-size: 16px; line-height: 1.7; }
+  .meta { margin-top: 7px; display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+  #count { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #count.near-limit { color: #ac4f19; font-weight: 600; }
+  .rules { display: flex; gap: 10px; align-items: flex-start; min-height: 44px; margin-top: 16px; padding: 6px 0; font-size: 12px; line-height: 1.7; color: var(--muted); cursor: pointer; }
+  .rules input { accent-color: var(--purple); margin: 2px 0 0; width: 20px; height: 20px; flex-shrink: 0; }
+  .send { width: 100%; display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 48px; margin-top: 19px; border: 0; border-radius: 9px; background: var(--purple); color: white; font-size: 13px; font-weight: 600; transition: background .15s; }
+  .send:hover:not(:disabled) { background: var(--purple-dark); }
+  .send:disabled { opacity: .65; cursor: wait; }
+  .form-note { color: var(--muted); font-size: 10px; margin: 12px 0 0; text-align: center; }
+  .feedback { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: max-content; max-width: min(440px, calc(100% - 32px)); padding: 12px 16px; border: 1px solid; border-radius: 12px; font-size: 13px; box-shadow: 0 5px 24px #26223f14; z-index: 10; overflow-wrap: anywhere; }
+  .feedback:empty { display: none; }
+  .feedback.success { color: #22674e; background: #ebf8f1; border-color: #cdebdc; }
+  .feedback.error { color: #a33650; background: #fff0f4; border-color: #f5d3de; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .footer { width: min(100%, 520px); margin: 0 auto; padding: 18px 12px 30px; text-align: center; font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+  .footer span { color: #64518b; }
+  .noscript { font-size: 12px; color: #a33650; }
+  @media (max-width: 460px) {
+    .shell { width: calc(100% - 32px); }
+    .header { min-height: 64px; }
+    .campus { max-width: 210px; }
+    .main { margin-top: 4px; }
+    .intro { margin-bottom: 22px; }
+    h1 { font-size: 29px; }
+    .intro-copy { max-width: 290px; margin: auto; font-size: 12px; }
+    .hero-art { width: 64px; height: 64px; }
+    .card { padding: 20px 18px; border-radius: 15px; }
+    .cat { font-size: 11px; }
+  }
+  @media (max-width: 380px) {
+    .two { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-name">menfess<span>kampus.</span></div>
+        <small class="campus" id="campus">Universitas Nusantara</small>
+        <span class="account" id="account">@kampusfess</span>
+      </div>
+    </header>
+    <main class="main">
+      <section class="intro" aria-labelledby="intro-title">
+        <!-- Love letter 3D, Microsoft Fluent Emoji. Lisensi MIT ada di bawah. -->
+        <div class="hero-art" aria-hidden="true">
+          <img class="hero-icon" src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Love%20letter/3D/love_letter_3d.png" width="76" height="76" alt="" referrerpolicy="no-referrer" draggable="false">
+          <span class="hero-fallback" hidden>💌</span>
+        </div>
+        <h1 id="intro-title">Cerita <span>tanpa nama.</span></h1>
+        <p class="intro-copy">Titip pesanmu. Biar menfess yang menyampaikan.</p>
+      </section>
+      <section class="card" aria-label="Kirim menfess">
+        <form id="menfess-form" novalidate>
+          <fieldset>
+            <legend>Kategori</legend>
+            <div class="cats" id="cats"></div>
+          </fieldset>
+          <div class="two">
+            <div class="field">
+              <label class="field-label" for="to">Untuk <span class="optional">(opsional)</span></label>
+              <input id="to" name="to" maxlength="50" placeholder="Siapa, nih?" autocomplete="off">
+            </div>
+            <div class="field">
+              <label class="field-label" for="from">Dari <span class="optional">(samaran)</span></label>
+              <input id="from" name="from" maxlength="30" placeholder="Anonim" autocomplete="off">
+            </div>
+          </div>
+          <input class="hp" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="field-label" for="text">Pesan kamu</label>
+          <textarea id="text" name="text" maxlength="400" placeholder="Hai, ada yang mau aku bilang..." aria-describedby="text-hint count" required></textarea>
+          <div class="meta"><span id="text-hint">Minimal 10 karakter</span><span id="count">0 / 400</span></div>
+          <label class="rules" for="agree">
+            <input type="checkbox" id="agree" required>
+            <span>Pesanku tidak berisi nama lengkap, NIM, nomor HP, atau serangan terhadap orang lain.</span>
+          </label>
+          <button class="send" id="send" type="submit"><span id="send-label">Kirim menfess</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Zm0 0L11 13"/></svg></button>
+          <div class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+          <p class="form-note">Tanpa login · Maksimal 1 pesan per 30 detik</p>
+        </form>
+        <noscript><p class="noscript">Aktifkan JavaScript di browser untuk mengirim menfess.</p></noscript>
+      </section>
+    </main>
+    <footer class="footer">Pesan diperiksa admin sebelum tayang di <span id="footer-account">@kampusfess</span>.</footer>
+  </div>
+
+<script>
+// URL deployment Apps Script. Perbarui jika membuat deployment baru.
+const API_URL = 'https://script.google.com/macros/s/AKfycbzjUKxQMeGUdCv_KFzpPf-pJrqzpXVvsgUFsn-axkx_HOOqwbmE-xga7968a72lh3eG/exec';
+
+const $ = s => document.querySelector(s);
+const CATS = {
+  confess: 'Confess', tanya: 'Tanya', info: 'Info',
+  curhat: 'Curhat', kritik: 'Kritik kampus', lostfound: 'Lost & Found'
+};
+let cat = 'confess';
+let sending = false;
+let feedbackTimer;
+
+const heroIcon = $('.hero-icon');
+const useFallbackIcon = () => {
+  heroIcon.hidden = true;
+  $('.hero-fallback').hidden = false;
+};
+heroIcon.addEventListener('error', useFallbackIcon);
+if (heroIcon.complete && !heroIcon.naturalWidth) useFallbackIcon();
+
+// Tidak pernah mengirim pesan ke URL relatif atau deployment /dev.
+function apiConfigured() {
+  try {
+    const url = new URL(API_URL);
+    return url.protocol === 'https:' && url.hostname === 'script.google.com' &&
+      url.pathname.endsWith('/exec') && !url.search && !url.hash;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function loadSettings() {
+  if (!apiConfigured()) return;
+  try {
+    const response = await fetch(API_URL + '?page=settings');
+    if (!response.ok) return;
+    const data = await response.json();
+    if (typeof data.campus === 'string' && data.campus.trim()) {
+      $('#campus').textContent = data.campus;
+    }
+    if (typeof data.handle === 'string' && data.handle.trim()) {
+      const handle = '@' + data.handle.trim().replace(/^@+/, '');
+      $('#account').textContent = handle;
+      $('#footer-account').textContent = handle;
+    }
+  } catch (e) { /* Nama default tetap ditampilkan jika API tidak tersedia. */ }
+}
+loadSettings();
+
+// Token acak hanya untuk rate limit server. Jangan simpan pesan atau data diri.
+let device = Math.random().toString(36).slice(2) + Date.now().toString(36);
+try {
+  device = localStorage.getItem('mk_dev') || device;
+  localStorage.setItem('mk_dev', device);
+} catch (e) { /* Tetap bisa mengirim jika localStorage diblokir. */ }
+
+$('#cats').innerHTML = Object.entries(CATS).map(([key, label]) =>
+  '<button type="button" class="cat" data-c="' + key + '" aria-pressed="' + (key === cat) + '">' + label + '</button>'
+).join('');
+$('#cats').addEventListener('click', e => {
+  const button = e.target.closest('.cat');
+  if (!button || sending) return;
+  cat = button.dataset.c;
+  document.querySelectorAll('.cat').forEach(item => {
+    item.setAttribute('aria-pressed', String(item === button));
+  });
+});
+
+function updateCount() {
+  const length = $('#text').value.length;
+  $('#count').textContent = length + ' / 400';
+  $('#count').classList.toggle('near-limit', length >= 360);
+}
+$('#text').addEventListener('input', () => {
+  updateCount();
+  $('#text').removeAttribute('aria-invalid');
+});
+$('#agree').addEventListener('change', () => $('#agree').removeAttribute('aria-invalid'));
+
+function feedback(message, error) {
+  clearTimeout(feedbackTimer);
+  const box = $('#feedback');
+  box.className = 'feedback ' + (error ? 'error' : 'success');
+  box.textContent = message;
+  if (!error) feedbackTimer = setTimeout(() => { box.textContent = ''; }, 6000);
+}
+
+function setSending(value) {
+  sending = value;
+  // Hindari draft baru tertimpa reset ketika respons pengiriman tiba.
+  $('#menfess-form').querySelectorAll('input, textarea, button').forEach(el => { el.disabled = value; });
+  $('#send-label').textContent = value ? 'Mengirim...' : 'Kirim menfess';
+  $('#menfess-form').setAttribute('aria-busy', String(value));
+}
+
+$('#menfess-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (sending) return;
+  const text = $('#text').value.trim();
+  if (text.length < 10 || text.length > 400) {
+    feedback('Tulis pesan antara 10 sampai 400 karakter, ya.', true);
+    $('#text').setAttribute('aria-invalid', 'true');
+    $('#text').focus();
+    return;
+  }
+  if (!$('#agree').checked) {
+    feedback('Setujui aturan pengiriman dulu sebelum menitipkan cerita.', true);
+    $('#agree').setAttribute('aria-invalid', 'true');
+    $('#agree').focus();
+    return;
+  }
+  if (!apiConfigured()) {
+    feedback('URL API belum diatur. Isi API_URL dengan URL lengkap Apps Script yang berakhiran /exec.', true);
+    return;
+  }
+  const data = {
+    cat, text, to: $('#to').value, from: $('#from').value,
+    website: $('#website').value, device
+  };
+  setSending(true);
+  clearTimeout(feedbackTimer);
+  $('#feedback').textContent = '';
+  try {
+    // text/plain adalah simple request: jangan ganti ke application/json
+    // dan jangan pakai mode no-cors, karena respons JSON harus bisa dibaca.
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const result = await response.json();
+    if (result && result.ok === false) {
+      feedback(typeof result.error === 'string' ? result.error : 'Pesan belum bisa dikirim. Coba lagi, ya.', true);
+      return;
+    }
+    if (!result || result.ok !== true) throw new Error('Respons bukan hasil API');
+    $('#text').value = '';
+    $('#to').value = '';
+    $('#from').value = '';
+    $('#agree').checked = false;
+    updateCount();
+    feedback('Ceritamu sudah terkirim! Admin akan memeriksanya sebelum diposting di Instagram.', false);
+  } catch (err) {
+    feedback('Koneksi bermasalah, coba lagi', true);
+  } finally {
+    setSending(false);
+  }
+});
+</script>
+<!--
+Love letter 3D: https://github.com/microsoft/fluentui-emoji
+MIT License
+
+Copyright (c) Microsoft Corporation.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+</body>
+</html>
