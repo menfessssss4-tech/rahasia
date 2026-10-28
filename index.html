@@ -52,13 +52,9 @@
   .hero h1 em { position:relative; color:var(--pink); }
   .hero h1 em::after { content:""; position:absolute; left:-2%; right:-2%; bottom:6%; height:16%; background:var(--lemon); z-index:-1; border-radius:4px; transform:rotate(-1.5deg); }
   .hero p { margin-top:14px; font-size:16px; color:var(--ink-soft); max-width:30ch; line-height:1.5; }
-  .stamp { position:absolute; right:0; top:4px; width:88px; min-height:104px; background:var(--paper-2); border:3px dashed var(--pink); border-radius:8px; display:grid; place-items:center; padding:6px; text-align:center; transform:rotate(8deg); font:700 12px/1.1 var(--display); color:#c52a6d; box-shadow:-4px 6px 0 -1px #4a19421a; text-decoration:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+  .stamp { position:absolute; z-index:3; right:0; top:4px; width:88px; min-height:104px; background:var(--paper-2); border:3px dashed var(--pink); border-radius:8px; display:grid; place-items:center; padding:6px; text-align:center; transform:rotate(8deg); font:700 12px/1.1 var(--display); color:#c52a6d; box-shadow:-4px 6px 0 -1px #4a19421a; text-decoration:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
   .stamp svg { width:38px; height:30px; display:block; margin:0 auto 4px; }
   #stamp-campus { display:block; max-width:65px; overflow-wrap:anywhere; }
-  .stamp.tap { animation:wiggle .25s; }
-  .dots { position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); display:flex; gap:4px; }
-  .dots i { width:5px; height:5px; border-radius:50%; background:#cfa3b8; }
-  .dots i.on { background:var(--pink); }
   .letter { position:relative; background:var(--paper-2); border:2px solid var(--ink); border-radius:22px; padding:28px 22px 22px; box-shadow:8px 8px 0 var(--pink); }
   .tape { position:absolute; top:-14px; left:50%; width:120px; height:28px; transform:translateX(-50%) rotate(-3deg); background:repeating-linear-gradient(45deg,#ff8cc3e6 0 8px,#ffd1e6e6 8px 16px); border-radius:3px; pointer-events:none; }
   .label { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; }
@@ -109,7 +105,6 @@
   .feedback.success { background:#ddf8ed; }
   .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
   @keyframes bob { 50% { transform:translateY(-8px) rotate(var(--r,6deg)); } }
-  @keyframes wiggle { 50% { transform:rotate(-4deg) scale(1.08); } }
   @media (max-width:600px) {
     .stk { scale:.75; }
     .stk.l { left:-12px; } .stk.r { right:-8px; }
@@ -151,9 +146,8 @@
     <a class="handle" data-instagram target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-ig"/></svg><span id="account" data-handle>@menfeess</span></a>
   </div>
   <header class="hero">
-    <a class="stamp" id="admin-entry" aria-label="Login admin: tekan tiga kali dengan cepat">
+    <a class="stamp" id="admin-entry" aria-label="Login admin" title="Buka login admin">
       <div><svg aria-hidden="true"><use href="#i-env"/></svg><span id="stamp-campus">PSDKU 4</span></div>
-      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
     </a>
     <small>psst, cerita tanpa nama kok~ ♡</small>
     <h1>Cerita<br><em>tanpa</em> nama.</h1>
@@ -252,25 +246,17 @@ async function loadSettings() {
 }
 loadSettings();
 
-// Tiga ketukan dalam 1,2 detik membuka login Apps Script, bukan login demo lokal.
-const adminEntry = $('#admin-entry'), dots = adminEntry.querySelectorAll('.dots i');
+// Link biasa: satu ketukan/klik atau Enter membuka login Apps Script yang dilindungi PIN.
+const adminEntry = $('#admin-entry');
 if (apiConfigured()) adminEntry.href = API_URL + '?page=admin';
-let adminTapCount = 0, adminTapStarted = 0, tapTimer;
 adminEntry.addEventListener('click', e => {
-  if (sending || !apiConfigured()) { e.preventDefault(); return; }
-  const now = performance.now();
-  if (!adminTapCount || now - adminTapStarted > 1200) { adminTapCount = 0; adminTapStarted = now; }
-  adminTapCount++;
-  clearTimeout(tapTimer);
-  dots.forEach((dot, i) => dot.classList.toggle('on', i < adminTapCount));
-  if (adminTapCount < 3) {
+  if (!apiConfigured()) {
     e.preventDefault();
-    adminEntry.classList.remove('tap'); void adminEntry.offsetWidth; adminEntry.classList.add('tap');
-    tapTimer = setTimeout(() => { adminTapCount = 0; dots.forEach(dot => dot.classList.remove('on')); }, 1200);
-    return;
+    feedback('URL API belum diatur. Isi API_URL dengan URL Apps Script /exec.', true);
+  } else if (sending) {
+    e.preventDefault();
+    feedback('Tunggu pengiriman pesan selesai sebelum membuka admin.', true);
   }
-  adminTapCount = 0;
-  dots.forEach(dot => dot.classList.remove('on'));
 });
 const category = () => $('input[name=cat]:checked').value;
 function composedText() {
