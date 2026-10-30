@@ -181,6 +181,10 @@
         <div class="err" id="err" aria-live="polite"></div>
       </div>
       <label class="agree" for="agree"><input type="checkbox" id="agree" required><span>Pesanku <b>tidak</b> berisi nama lengkap, NIM, nomor HP, atau serangan terhadap orang lain.</span></label>
+      <p class="hint" id="form-status" role="status">Memeriksa status penerimaan…</p>
+      <button class="again" id="refresh-config" type="button">Muat ulang status form</button>
+      <div id="anti-bot" style="max-width:100%;margin:12px 0" aria-label="Verifikasi anti-bot"></div>
+      <p class="hint" id="anti-bot-note" hidden>Verifikasi anti-bot diproses oleh Cloudflare.</p>
       <button class="send" id="send" type="submit"><span id="send-label">Kirim menfess</span><span aria-hidden="true">✈</span></button>
       <p class="hint">🔒 Tanpa login · Maksimal 1 pesan per 30 detik</p>
     </form>
@@ -206,6 +210,60 @@
 const API_URL = 'https://script.google.com/macros/s/AKfycbw83vAZP5PR2HSsc9410obuITBkqDCsQVojFm6TxLxprM-UNb1SzLMS3yyhu6mRIMf5/exec';
 const $ = s => document.querySelector(s);
 let sending = false, cooldownUntil = 0, cooldownTimer, feedbackTimer;
+let formConfig = null, turnstileToken = '', widgetId = null, configRequest = 0;
+function resetAntiBot() {
+  turnstileToken = '';
+  if (widgetId !== null && window.turnstile) window.turnstile.reset(widgetId);
+}
+function mountAntiBot() {
+  if (widgetId !== null && window.turnstile) window.turnstile.remove(widgetId);
+  widgetId = null; turnstileToken = ''; $('#anti-bot').replaceChildren();
+  $('#anti-bot-note').hidden = !formConfig || !formConfig.turnstileEnabled;
+  if (!formConfig || formConfig.paused || !formConfig.turnstileEnabled) return;
+  if (!window.turnstile) {
+    $('#form-status').textContent = 'Memuat verifikasi anti-bot…';
+    if (!document.getElementById('turnstile-script')) {
+      const script = document.createElement('script');
+      script.id = 'turnstile-script'; script.async = true;
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileReady';
+      script.onerror = () => { script.remove(); $('#form-status').textContent = 'Anti-bot gagal dimuat. Periksa koneksi lalu muat ulang status form.'; };
+      document.head.appendChild(script);
+    }
+    return;
+  }
+  try {
+    widgetId = window.turnstile.render('#anti-bot',{
+      sitekey:formConfig.siteKey,action:'menfess',size:'flexible',
+      callback:value => { turnstileToken = value; $('#form-status').textContent = 'Verifikasi selesai. Ceritamu siap dikirim.'; update(); },
+      'expired-callback':() => { turnstileToken = ''; $('#form-status').textContent = 'Verifikasi kedaluwarsa. Selesaikan ulang sebelum mengirim.'; update(); },
+      'error-callback':() => { turnstileToken = ''; $('#form-status').textContent = 'Verifikasi gagal. Muat ulang status form untuk mencoba lagi.'; update(); }
+    });
+    $('#form-status').textContent = 'Selesaikan verifikasi anti-bot sebelum mengirim.';
+  } catch (e) { $('#form-status').textContent = 'Anti-bot belum siap. Muat ulang status form atau hubungi pengelola.'; }
+}
+window.turnstileReady = () => { mountAntiBot(); update(); };
+async function loadFormConfig() {
+  if (sending) return;
+  const request = ++configRequest;
+  formConfig = null; turnstileToken = ''; update();
+  $('#form-status').textContent = 'Memeriksa status penerimaan…';
+  try {
+    if (!apiConfigured()) throw new Error('URL API belum diatur');
+    const response = await fetch(API_URL + '?page=form-config');
+    if (!response.ok) throw new Error('Konfigurasi tidak tersedia');
+    const c = await response.json();
+    if (!c || typeof c.paused !== 'boolean' || typeof c.turnstileEnabled !== 'boolean' ||
+        typeof c.pauseMessage !== 'string' || (c.turnstileEnabled && typeof c.siteKey !== 'string')) throw new Error('Konfigurasi tidak valid');
+    if (request !== configRequest) return;
+    formConfig = c;
+    $('#form-status').textContent = c.paused ? c.pauseMessage : 'Penerimaan menfess dibuka.';
+    mountAntiBot();
+  } catch (e) {
+    if (request !== configRequest) return;
+    $('#form-status').textContent = 'Status form belum tersedia. Periksa koneksi lalu muat ulang status form.';
+  }
+  update();
+}
 let device = Math.random().toString(36).slice(2) + Date.now().toString(36);
 try {
   device = localStorage.getItem('mk_dev') || device;
@@ -270,7 +328,8 @@ function update() {
   $('#bar').style.background = n > 360 ? 'var(--pink)' : short >= 10 ? 'var(--mint)' : 'var(--lemon)';
   $('#err').textContent = n > 400 ? 'Pesan dan info lagu melebihi 400 karakter.' : short > 0 && short < 10 ? 'Kurang ' + (10 - short) + ' karakter lagi' : '';
   const left = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
-  $('#send').disabled = sending || left > 0;
+  $('#send').disabled = sending || left > 0 || !formConfig || formConfig.paused ||
+    formConfig.turnstileEnabled && !turnstileToken;
   $('#send-label').textContent = sending ? 'Mengirim...' : left ? 'Tunggu ' + left + ' detik' : 'Kirim menfess';
 }
 function tick() {
@@ -293,6 +352,8 @@ function setSending(value) {
 $('#menfess-form').addEventListener('submit', async e => {
   e.preventDefault();
   if (sending || Date.now() < cooldownUntil) return;
+  if (!formConfig || formConfig.paused) { feedback(formConfig ? formConfig.pauseMessage : 'Muat ulang status form sebelum mengirim.', true); return; }
+  if (formConfig.turnstileEnabled && !turnstileToken) { feedback('Selesaikan verifikasi anti-bot sebelum mengirim.', true); return; }
   const text = composedText();
   if ($('#text').value.trim().length < 10 || text.length > 400) {
     feedback('Tulis pesan minimal 10 karakter. Total pesan dan info lagu maksimal 400 karakter.', true);
@@ -304,6 +365,7 @@ $('#menfess-form').addEventListener('submit', async e => {
   }
   if (!apiConfigured()) { feedback('URL API belum diatur. Isi API_URL dengan URL Apps Script /exec.', true); return; }
   const data = { cat:category(), text, to:$('#to').value, from:$('#from').value, website:$('#website').value, device };
+  if (formConfig.turnstileEnabled) data.turnstileToken = turnstileToken;
   setSending(true); clearTimeout(feedbackTimer); $('#feedback').textContent = '';
   try {
     const response = await fetch(API_URL, {
@@ -322,13 +384,15 @@ $('#menfess-form').addEventListener('submit', async e => {
     feedback('Ceritamu sudah terkirim! Admin akan memeriksanya sebelum diposting.', false);
   } catch (e) {
     feedback('Koneksi bermasalah, coba lagi', true);
-  } finally { setSending(false); }
+  } finally { resetAntiBot(); setSending(false); }
 });
 $('#again').addEventListener('click', () => {
   $('#done').hidden = true; $('#menfess-form').hidden = false;
   tick(); $('#text').focus();
 });
 update();
+$('#refresh-config').addEventListener('click', loadFormConfig);
+loadFormConfig();
 </script>
 </body>
 </html>
