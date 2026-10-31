@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cerita tanpa nama � Menfess Kampus</title>
+<title>Cerita tanpa nama &middot; Menfess Kampus</title>
 <meta name="description" content="Titip pesanmu. Biar menfess yang menyampaikan. Tanpa nama, tanpa login.">
-<meta property="og:title" content="Cerita tanpa nama � Menfess Kampus">
+<meta property="og:title" content="Cerita tanpa nama &middot; Menfess Kampus">
 <meta property="og:description" content="Titip pesanmu. Biar menfess yang menyampaikan. Tanpa nama, tanpa login.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="id_ID">
@@ -258,9 +258,9 @@
 
   <section class="hero rv">
     <a class="stamp" id="admin-entry" aria-label="Login admin" title="Buka login admin" href="#">
-      <div><span class="env">?</span><span id="stamp-campus">PSDKU 4</span></div>
+      <div><span class="env">&#9993;</span><span id="stamp-campus">PSDKU 4</span></div>
     </a>
-    <p class="psst">psst, cerita tanpa nama kok~ ?</p>
+    <p class="psst">psst, cerita tanpa nama kok~ &#9825;</p>
     <h1>Cerita <em>tanpa</em><br>nama.</h1>
     <p class="sub">Titip pesanmu. Biar menfess yang menyampaikan.</p>
   </section>
@@ -272,11 +272,11 @@
           <div class="row"><span class="label">KATEGORI</span><span class="hint">pilih satu</span></div>
           <div class="chips" role="group">
             <input type="radio" name="cat" id="c1" value="confess" checked hidden>
-            <label for="c1" class="chip" aria-pressed="true">?? Menfess</label>
+            <label for="c1" class="chip" aria-pressed="true">&#128140; Menfess</label>
             <input type="radio" name="cat" id="c2" value="songfess" hidden>
-            <label for="c2" class="chip" aria-pressed="false">?? Songfess</label>
+            <label for="c2" class="chip" aria-pressed="false">&#127925; Songfess</label>
             <input type="radio" name="cat" id="c3" value="kritik" hidden>
-            <label for="c3" class="chip" aria-pressed="false">?? Kritik</label>
+            <label for="c3" class="chip" aria-pressed="false">&#128227; Kritik</label>
           </div>
         </div>
 
@@ -300,7 +300,7 @@
 
         <div class="field">
           <div class="row"><span class="label">PESAN KAMU</span><span class="hint">min. 10 karakter</span></div>
-          <textarea id="text" maxlength="400" placeholder="Tulis di sini� nggak ada yang tahu ini kamu ??" required></textarea>
+          <textarea id="text" maxlength="400" placeholder="Tulis di sini&hellip; nggak ada yang tahu ini kamu &#129323;" required></textarea>
           <div style="height:4px;background:rgba(15,31,110,.1);border-radius:4px;overflow:hidden;margin-top:6px" aria-hidden="true">
             <span id="bar" style="display:block;height:100%;width:0%;background:var(--accent);transition:width .2s,background .2s"></span>
           </div>
@@ -321,15 +321,15 @@
         <p class="hint" id="anti-bot-note" hidden>Verifikasi anti-bot diproses oleh Cloudflare.</p>
 
         <div class="btns">
-          <button type="button" class="btn ghost" id="refresh-config">? Muat ulang status form</button>
-          <button type="submit" class="btn send" id="send" disabled><span id="send-label">Kirim menfess</span> <span aria-hidden="true">?</span></button>
+          <button type="button" class="btn ghost" id="refresh-config">&#8635; Muat ulang status form</button>
+          <button type="submit" class="btn send" id="send" disabled><span id="send-label">Kirim menfess</span> <span aria-hidden="true">&#9992;</span></button>
         </div>
         <div class="toast" id="feedback"></div>
-        <p class="note">?? Tanpa login � Maksimal 1 pesan per 30 detik</p>
+        <p class="note">&#128274; Tanpa login &middot; Maksimal 1 pesan per 30 detik</p>
       </form>
 
       <section class="done" id="done" aria-labelledby="done-title" hidden>
-        <h2 id="done-title" tabindex="-1" style="font-family:var(--display);font-size:32px;color:var(--text);margin:14px 0 8px">Terkirim! ?</h2>
+        <h2 id="done-title" tabindex="-1" style="font-family:var(--display);font-size:32px;color:var(--text);margin:14px 0 8px">Terkirim! &#9825;</h2>
         <p class="sub" style="margin:0 auto 20px;text-align:center">Pesanmu lagi diperiksa admin. Kalau lolos, nanti tayang di <span data-handle>@polijemenfess4</span>.</p>
         <button class="btn send again" id="again" type="button" style="display:inline-block;padding:12px 28px">Tulis pesan lain</button>
       </section>
@@ -477,7 +477,7 @@ function mountAntiBot(siteKey) {
 
 async function loadFormConfig() {
   const status = $('#form-status');
-  status.textContent = 'Memeriksa status penerimaan�';
+  status.textContent = 'Memeriksa status penerimaan\u2026';
   if (!apiConfigured()) {
     formConfig = { paused: false, pauseMessage: '', turnstileEnabled: false, siteKey: '' };
     status.textContent = 'Mode demo: URL API belum diatur.';
@@ -492,7 +492,7 @@ async function loadFormConfig() {
     if (formConfig.paused) {
       status.textContent = formConfig.pauseMessage || 'Penerimaan menfess sedang dijeda sementara.';
     } else {
-      status.textContent = formConfig.turnstileEnabled ? 'Penerimaan dibuka � anti-bot aktif.' : 'Penerimaan menfess dibuka.';
+      status.textContent = formConfig.turnstileEnabled ? 'Penerimaan dibuka \u00b7 anti-bot aktif.' : 'Penerimaan menfess dibuka.';
     }
     mountAntiBot(formConfig.turnstileEnabled ? formConfig.siteKey : '');
   } catch (e) {
