@@ -385,7 +385,7 @@ function setTheme(t){
 tBtns.forEach(b => b.onclick = () => setTheme(b.dataset.set));
 try { const s = localStorage.getItem('menfess-theme'); if (s) setTheme(s); } catch (e) {}
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbxvrkZ-swaXOIesGrPPUjIBL-4uljvwHN7XaOlU8bwoCqoh_nn1XakYjdnDHvs-m2B8/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxIdzYYR-TU0Xt0HP-blE0NQnYMuG_XZlBREWN4GTXD9aHPpBCUc6n4UmDYsX0XQZE/exec';
 
 const apiConfigured = () => typeof API_URL === 'string' && API_URL.startsWith('https://script.google.com/macros/s/') && !API_URL.includes('ISI_DENGAN_URL');
 
